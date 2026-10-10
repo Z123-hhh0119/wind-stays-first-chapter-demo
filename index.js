@@ -685,16 +685,10 @@ const Engine = (function () {
 		if (loadPromise == null) {
 			loadPath = basePath;
 			loadPromise = fetch(`${loadPath}.wasm.gz`).then(function (response) {
-				if (!response.ok) {
-					throw new Error(`Failed loading compressed engine '${loadPath}.wasm.gz'`);
-				}
-				if (typeof DecompressionStream === 'undefined') {
-					throw new Error('This browser is too old to open the game. Please use a recent version of Chrome, Edge, Firefox, or Safari.');
-				}
-				return new Response(response.body.pipeThrough(new DecompressionStream('gzip')), {
-					headers: [['content-type', 'application/wasm']],
-				});
-			});
+                if (!response.ok) throw new Error(`Failed loading compressed engine '${loadPath}.wasm.gz'`);
+                if (typeof DecompressionStream === 'undefined') throw new Error('Please use a recent Chrome, Edge, Firefox or Safari browser.');
+                return new Response(response.body.pipeThrough(new DecompressionStream('gzip')), {headers: [['content-type', 'application/wasm']]});
+            });
 			requestAnimationFrame(preloader.animateProgress);
 		}
 		return loadPromise;
